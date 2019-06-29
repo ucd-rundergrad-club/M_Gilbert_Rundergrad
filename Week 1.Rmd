@@ -1,0 +1,112 @@
+---
+title: "Week 1"
+author: "Miranda Gilbert"
+date: "June 27, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+ Markdown Notes
+  bold = **word**
+  italic - *word*
+  # is header size, number of # = header
+  in line link 
+    [word](website)
+  Reference link
+    look at [a fun place]
+    [a fun place]: website
+  Inline/Reference Images
+    add ! in front
+    ![word](picture)
+  Block Quote
+    >in front of quote
+    paragraphs need > in spaces as well
+  Unordered List = Bullet point
+    * word
+    * word
+  2 spaces aftera line is a soft break
+  
+R Basics
+  assigning a variable x <- what you want x to be
+  Vector = c(1, 2, 3)
+  can assign vectors  to a variable
+  up arrow will show previous commands
+  type 2 letters and hit tab to see commands
+Sequence of Numbers
+  seq(0, 10, by=0.5)
+  seq(0,10, length=30)
+  length(something) shows length
+Vector
+  logical contains true, false, and NA
+  ask if vector is <> any number you get T/F answers
+  logical operators = == equality != inequality
+     If we have two logical expressions, A and B, we can ask whether at least one is TRUE with A | B (logical'or' a.k.a. 'union') or whether they are both TRUE with A & B (logical 'and' a.k.a. 'intersection'). Lastly, !A is the negation of A and is TRUE when A is FALSE and vice versa
+  CHaracter Vectors
+    paste(my_char, collapse = " ")
+    collapses a character vecctor
+    make character vector by c("word", "word")
+    example = paste("Hello", "world!", sep = " ")
+  Missing Values
+    NA = value not available
+    NAN = not a number
+    is.na(x) vector logical values same length as x with true = numbers
+  Subsetting Vectors
+    x is a vector
+    x[1:10] shows first 10 of vector
+    logical vectors
+      all non-NA values from vector y <- x[!is.na(x)]
+      y[y > 0] makes all positive integers of y appear
+      x[!is.na(x) & x > 0] all values of x not missing and greater than 0
+      x[c(-2, -10)] every integer except 2 and 10
+      vect <- c(foo = 11, bar = 2, norf = NA) names integers
+      can then find names of vect w/names(vect)
+      identical( name, name) checks id identical things
+      
+    Matricies and Data Frames
+      matrices can only contain a single class of data
+      data frames can consis of many different classes of data
+      dim(my_vector) <- c(4, 5) sets dim attribute to my vector dim=dimmension
+        created a matrix of 4 rows 5 columns
+      my_matrix2 <- matrix(1:20, nrow=4, ncol=5)
+        creates same matrix as above
+      cbind() combines columns combine character list of patients with matrix
+      
+      data.frame(patients, my_matrix) can store character vectors along side numbers
+      colnames(my_data) <- cnames crete column names for data as saved in cnames character list
+      
+    Looking at Data
+      common for data to be stored in data frame
+        therefore has 2 dimensions, rows and columns
+      nrow() checks rows ncol() checks colomns
+      head(plants,10) shows first 10 rows of data
+      tail(plants, 10) shows last 10 rows of data
+      summary(data) gives details
+      table(plants$Active_Growth_Period) gives table of column 
+      str() is structure. give a lot of above data
+      
+    
+  
+  

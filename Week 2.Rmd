@@ -1,0 +1,105 @@
+---
+title: "Week 2"
+author: "Miranda Gilbert"
+date: "6/30/2019"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+**R for Data Science Chapter 3**
+  * ggplot(data = <DATA>) + 
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>)) general template for plotting data.
+  * in aes() place x= and y= data
+  
+  * 3.2.4 1-5
+  
+    1. When running only ggplot(data = mpg) I get a blank grey plot.
+    
+    2. mpg has 234 rows and 11 columns
+    
+    3. drv is the column that describes if the car has front-wheel drive, rear-wheel drive, or four-wheel drive.
+    
+    4. ![Hwy vs Cyl](\Users\mira8\Documents\Rundergrad\Week 1/hwy.vs.cyl.jpg)
+    
+    5. The scatter plot tells you what kind of drive each class has, but not how many in each class. 
+    
+    ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))  adding color creates third variable in scatterplot 
+    can use shape instead of color, size, or alpha=shade
+  
+  * 3.3.1 1-6
+    
+    1. The class has to be outside the aes parenthesis, and that is why the code isnt working for problem 1. It should look like : ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy) color = "blue")
+  
+    2. Categorical:Model, year, cyl, trans, drv, fl, class, manufacturer
+        Continuous: hwy, cty, displ
+        You can run a summary of mpg to see the information. 
+        
+    
+    3. Color and size can adapt to the continuous variable, but shape cannot. Where all work for categorical variables. 
+    
+    4. Mapping the same variable to multiple aesthetics does as you would think. I made a graph with a color and size gradient depending on their cty value. Each asethetic affected the single point and they were displayed together.
+    
+    5. Stroke modifies the width of the border of a shape. It works with shapes that have a border, that you can color the inside and outside seperately.
+    
+    6. Using aes(colour = displ < 5) colors the plot with color that depicts whether a point is true or false in terms of the statement displ < 5. For example, if the displ was less than 5 for one point it was blue and if the display was not <5 it was red.
+    
+    
+  * 3.5.1 1-6
+    
+    1. Faceting a continuous variable creates a lot of small subplots. 
+    
+    2. The blank plots show that there are cars that do not fall under those particilar categories. For example, there are no 4 or 5 cylinder cars with rear-wheel drive or 5 cylinder cars with 4 wheel drive. All of this information is also avaiable in the scatterplot given to us to run. The only difference is that scatterplot I made does not show how many cars fit into each category, while the subplot scatter plot does. 
+    
+    3. ![drv](\Users\mira8\Documents\Rundergrad\Week 1/drv.jpg)
+    
+    ![cyl](\Users\mira8\Documents\Rundergrad\Week 1/cyl.jpg)
+    
+    The . acts as a place holder. The code creates the original (drv~cyl)facet plot that we had, except it is cut up into the two seperate drv and cyl pieces.Only looking at one variable at a time. 
+    
+    4. An advantage to the facet plot is that you can see how many cars fall into each subplot easily, however a disadvantage is that you aren't looking at the plots all together, like you could with a color plot. It's like looking at a lot of little pictures instead of the big picture. If working with a larger dataset, I think the facet plot would be better, because at that point, looking at smaller pictures is more managable than looking at the bigger picture. 
+    
+    5. nrow identifies the number of rows and ncol identifies the number of columns. as.table if  true makes the facets display as a table with highest value at the bottom right, and if false displays as a plot with highest value at top right.switch controls where the labels go. dir makes the data present horizontally or vertically. strip.position also moves around labels.Rows and columns are implied by variables for facet_grid.
+    
+    6. To create a longer x axis than y, for better visibility. 
+    
+    * 3.6.1
+      1. geom_line(), geom_boxplot(), geom_histogram(), geom_area()
+      2.Picture 
+      3. show.legend = false gets ride of the legend and removing it would display the legend. I think it was used to create a clearly labeled graph. 
+      4. se is used to determine if to show the confidence interval and the smooth curve.
+      5. They look the same. The top line of the first graph is carried over to the following two geom commands, which make it a shorter way to type the same graph as the one below. 
+      6. ggplot(data = mpg, mapping = aes(y = hwy, x = displ)) + 
+  geom_point() +
+  geom_smooth(se = FALSE)
+    
+    
+    
+  
+  

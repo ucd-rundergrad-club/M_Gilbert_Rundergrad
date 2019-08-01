@@ -1,0 +1,112 @@
+---
+title: "Week 4"
+author: "Miranda Gilbert"
+date: "7/29/2019"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##7.3.4 Exercises
+  1. 
+``` 
+ggplot(data = diamonds, mapping = aes(x = x)) + geom_histogram(binwidth = 30)
+```
+
+```
+ggplot(data = diamonds, mapping = aes(x = y)) + geom_histogram(binwidth = 30)
+```
+```
+ggplot(data = diamonds, mapping = aes(x = z)) + geom_histogram(binwidth = 30)
+```
+There are more small diamonds than large diamonds.Diamonds are usually wider than they are tall or deep, so I would suppose the larger numbers are width and the smaller are length and depth.
+
+  2.
+```{r}
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = price), binwidth = 50)
+```
+There is nothing around the 1500 range which is surprising. 
+
+  3. 
+```{r}
+diamonds %>% filter(between(carat, .96, 1.05)) %>%
+  group_by(carat) %>% summarize(count = n())
+```
+There are 23 .99 carrat diamonds and 1558 1 carrat diamonds. I am guessing because it looks nicer to have a 1 carat than .99 carat in the report.
+
+  4. 
+```{r}
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = price), binwidth = 50) +
+  coord_cartesian(xlim = c(0,5000), ylim = c(0,1600))
+```
+```{r}
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = price)) +
+  coord_cartesian(xlim = c(0,5000), ylim = c(0,1600))
+```
+```{r}
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = price), binwidth = 50) +
+  xlim(c(0,5000))
+```
+
+##7.4.1
+  1. Histograms remove missing values as seen in an above chart. Bar graphs create a caegory for missing numbers. I am guessing because missing numbers cannot be numerically shown on a hustogram but can be grouped in a bar graph. 
+  2. ne.ram determines if NA values are taken out before computing sum or mean by making ne.ram true or false. 
+  
+##7.5.1.1
+  1. *describe this plz)*
+```{r}
+ nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = cancelled, y = sched_dep_time))
+```
+  
+  2.
+```{r}
+  diamonds %>%
+  mutate(cut = as.numeric(cut),
+         color = as.numeric(color),
+         clarity = as.numeric(clarity)) %>%
+  select(price, everything()) %>%
+  cor()
+```
+Running a correlation matirx, carat is most correlated with price and therefore the most important determinant. There is a negative correlation with cut.
+
+  3. 
+```{r}
+  nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot() +
+  geom_boxploth(mapping = aes(y = cancelled, x = sched_dep_time))
+```
+x and y had to be flipped to show the plot correctly. 
+
+  5. 
+  Violin plot is a compact way to show continuous data by combining a density graph and a box plot.
+  Histogram also shows a continuous variable, but the variables have to fit into bins.
+  
+##7.5.2
+  One example of a categorical covatiation plot would be plotting the car types and the kind of drive they have and visualizing wiht geom_count()
+  
+##7.5.3
+  I could probably use my sunflowers time versus growth as two continuous variables and I would visualize with the box plot.
+
+  

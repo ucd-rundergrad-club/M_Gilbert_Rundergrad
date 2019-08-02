@@ -10,17 +10,20 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+```{r}
+library(tidyverse)
+library(ggstance)
+```
 ##7.3.4 Exercises
   1. 
-``` 
+```{r} 
 ggplot(data = diamonds, mapping = aes(x = x)) + geom_histogram(binwidth = 30)
 ```
 
-```
+```{r}
 ggplot(data = diamonds, mapping = aes(x = y)) + geom_histogram(binwidth = 30)
 ```
-```
+```{r}
 ggplot(data = diamonds, mapping = aes(x = z)) + geom_histogram(binwidth = 30)
 ```
 There are more small diamonds than large diamonds.Diamonds are usually wider than they are tall or deep, so I would suppose the larger numbers are width and the smaller are length and depth.

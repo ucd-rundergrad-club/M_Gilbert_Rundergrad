@@ -1,0 +1,123 @@
+---
+title: "Week 5"
+author: "Miranda Gilbert"
+date: "8/8/2019"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+##10.5 Exercises
+ 
+  1. A tibble will say "A Tibble" in the first line and it also only prints the first ten rows and as many columns that can fit the screen. 
+ 
+  2. Creating a tibble and creating a dataframe worked the same way. However, tibble doesnt do partial matching when pulling a variable, so while df$x worked with the dataframe, it didn't run for the tibble. Also a tibble will pull a column when running tdf[, "xyz"] while the dataframe code doesnt pull the column. 
+  
+```
+  df <- data.frame(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+
+tdf <- data.frame(abc = 1, xyz = "a")
+tdf$x
+tdf[, "xyz"]
+tdf[, c("abc", "xyz")]
+```
+  4. 
+```{r}
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+
+annoying$'1'
+```
+```{r}
+annoying %>% ggplot() +
+  geom_point(mapping = aes(x = `1`, y = `2`))
+```
+```{r}
+annoying$`3` <- annoying$`2` / annoying$`1`
+annoying
+```
+```{r}
+annoying %>% rename(one = `1`, two = `2`, three = `3`)
+```
+  5. enframe() converts named atomic vectors or lists to one or two column dataframes. Lists will be converted to a nested tibble. 
+  
+##11.2.2 Exercises
+  1. I would use read_delim() because it reads in files with any delimiter. 
+  4. Using read_csv and specifying quote = "'" allows me to read the text in a dataframe.
+```{r}
+read_csv("x,y\n1,'a,b'", quote = "'")
+```
+  5.
+```{r}
+read_csv("a,b\n1,2,3\n4,5,6")
+```
+There are three columns but only two are specified in the header so the third was dropped.
+```{r}
+read_csv("a,b,c\n1,2\n1,2,3,4")
+```
+In the first row there isnt enough data to fill the columns and in the second there is too much data and one is dropped. 
+```{r}
+read_csv("a,b\n\"1")
+```
+There are quotes that arent completed, messing up the code.
+```{r}
+read_csv("a,b\n1,2\na,b")
+```
+The only difference from other columns I find is a and b being treated as character vectors.
+```{r}
+read_csv("a;b\n1;3")
+```
+The columns are seperated by a semicolon, so I would use read_cvs2() insead for this data set. 
+
+##11.3.5 Exercises
+  1. locale sets defaults that can vary between countries such as date and time formats, decimals, grouping marks.
+  
+  2. R gives an error if decimal and grouping mark are the same.
+  
+```
+locale(decimal_mark = ".", grouping_mark = ".")
+```
+
+Groupings are . if decimals are ,
+```{r}
+locale(decimal_mark = ",")
+```
+
+Decimals are . if groupings are set to ,
+```{r}
+locale(grouping_mark = ",")
+```
+
+  3. Date and time gives dafault date and time formats. It would be useful when inputing dates from a different language because months and days can be written out in words instead of numbers. Ensuring that the correct code is used for the date default setting would be important. 
+  
+  7.
+```{r}
+d1 <- "January 1, 2010"
+d2 <- "2015-Mar-07"
+d3 <- "06-Jun-2017"
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d5 <- "12/30/14" # Dec 30, 2014
+t1 <- "1705"
+t2 <- "11:15:10.12 PM"
+
+parse_date(d1, "%B %d , %Y")
+parse_date(d2, "%Y-%b-%d")
+parse_date(d3, "%d-%b-%Y")
+parse_date(d4, "%B %d (%Y)")
+parse_date(d5, "%m/%d/%y")
+parse_time(t1, "%H%M")
+parse_time(t2, "%H:%M:%OS %p")
+```
+

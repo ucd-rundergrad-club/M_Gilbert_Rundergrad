@@ -1,0 +1,191 @@
+---
+title: "Week 6"
+author: "Miranda Gilbert"
+date: "8/20/2019"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+##12.2.1 Exercises
+
+  2. Filter TB cases per country per year and matching pop count
+  
+```{r}
+countries <- filter(table2, type == 'cases')$country
+years <- filter(table2, type == 'cases')$year
+cases <- filter(table2, type == 'cases')$count
+populations <- filter(table2, type == 'population')$count
+
+table2_rate <- tibble(country = countries,
+                      year = years,
+                      rate = cases/populations * 10000)
+
+table2_rate
+
+```
+
+```{r}
+table4c <-
+  tibble(
+    country = table4a$country,
+    `1999` = table4a[["1999"]] / table4b[["1999"]] * 10000,
+    `2000` = table4a[["2000"]] / table4b[["2000"]] * 10000
+  )
+table4c
+```
+
+Making it from the two different table 4s was slightly easier, less filtering.
+
+  3. First I need to make sure only the cases are in the plot from the count column.
+  
+```{r}
+table2 %>%
+  filter(type == "cases") %>%
+  ggplot(aes(year, count)) +
+  geom_line(aes(group = country), colour = "grey50") +
+  geom_point(aes(colour = country)) +
+  scale_x_continuous(breaks = unique(table2$year)) +
+  ylab("cases") 
+```
+
+##12.3.3
+
+  1. The columns were shifted around in the two different stocks data sets. The year column also changed from a chr to dbl.
+  
+```{r}
+stocks <- tibble(
+  year = c(2015, 2015, 2016, 2016),
+  half = c(1, 2, 1, 2),
+  return = c(1.88, 0.59, 0.92, 0.17)
+)
+stocks
+```
+```{r}
+stocks %>%
+  spread(year, return) %>%
+  gather(`2015`:`2016`, key = "year", value = "return")
+```
+  
+  2. The code didnt work becuse the years need back ticks around them, so they can be counted as variables instead of numbers.
+```
+table4a %>% 
+  gather(1999, 2000, key = "year", value = "cases")
+```
+3. Spread doesnt work because there are two Phillip Woods with age as the key. Adding another colum to differentiate between the Phillips would allow for spreading.For example:
+
+```{r}
+people <- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+people$id <- c(1, 1, 2, 1, 1)
+people
+```
+
+  4. 
+```{r}
+preg <- tribble(
+  ~pregnant, ~male, ~female,
+  "yes",     NA,    10,
+  "no",      20,    12
+)
+preg %>%
+  gather(key = 'gender', value = 'count', 2:3 , na.rm = TRUE)
+```
+
+##12.4.3
+
+  1. 
+```
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
+  separate(x, c("one", "two", "three"))
+```
+A warning pops up about additional pieces being disgarded. 
+
+```{r}
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
+  separate(x, c("one", "two", "three"), extra = "drop")
+```
+Adding extra can either drop the additional value without the warning message, or add it on to the last value in the row. 
+```{r}
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
+  separate(x, c("one", "two", "three"), extra = "merge")
+```
+
+```
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
+  separate(x, c("one", "two", "three"))
+```
+A warning pops up about a missing value, but fil can add an NA to the right or left most column without the warning. 
+```{r}
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
+  separate(x, c("one", "two", "three"), fill = "right")
+```
+
+  2. Remove discards input columns in the output data frame. You set it to false to create a new variable, but keep the old one. 
+  
+  3. You can only select one column for extract and seperate, but there are many ways to split up the column into different columns. Unite can choose many columns but combine to only one vector. 
+  
+##12.6.1
+
+  3.??
+  
+```{r}
+who 
+
+who1 <- who %>% 
+  gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
+
+who2 <- who1 %>% 
+  mutate(key = stringr::str_replace(key, "newrel", "new_rel"))
+
+who3 <- who2 %>% 
+  separate(key, c("new", "type", "sexage"), sep = "_")
+
+```
+```{r}
+select(who3, country, iso2, iso3) %>%
+  distinct() %>%
+  group_by(country) %>%
+  filter(n() > 1)
+```
+
+  4. 
+  
+```{r}
+who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1) %>%
+  group_by(country, year, sex) %>%
+  summarize(total_case = sum(value)) %>%
+  unite(country_sex, country, sex, remove = FALSE) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = year, y = total_case, color = sex,
+                          group = country_sex))
+```
+
+
+
+
+
+
+
+
+

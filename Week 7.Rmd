@@ -1,0 +1,140 @@
+---
+title: "Week 7"
+author: "Miranda Gilbert"
+date: "9/2/2019"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(tidyverse)
+library(nycflights13)
+library(babynames)
+library(maps)
+```
+
+##13.2.1 Exercises
+
+  1. I would want to combine flights and airports because flights has the origin and destination and airports has the longitude and latitude needed for mapping. 
+  
+  2. faa and origin connect between airports and flights, so the same connection can be made between faa and the origin in weathers. 
+  
+  3. If there were weather records for every airport then weather could also be connected to destination. 
+  
+  4. I would create a new table with month, day, and year of special holidays that people fly less during. My new table would connect to the month, day, and year in flights and weather. 
+  
+##13.3.1 Exercises
+  
+  1. 
+  
+```{r}
+flights %>%
+  mutate(index = row_number()) %>%
+  select(index, everything())
+```
+
+
+  2a. playerID, yearID, and stint are all keys for the Lahman::batting data. playerID and yearID are not primary keys becuse a player can play on different teams in the same year. 
+  
+  
+  2b. year, sex, and name are all keys for the babynames::babynames data set. Year and name are not promary keys because babues with the same name can be born in the same year.
+  
+##13.4.6 Exercises
+
+  1.
+  Spatial distribution of delays
+```{r}
+airports %>%
+  semi_join(flights, c("faa" = "dest")) %>%
+  ggplot(aes(lon, lat)) +
+    borders("state") +
+    geom_point() +
+    coord_quickmap()
+```
+
+```{r}
+flights %>% group_by(dest) %>%
+  summarize(avg_arr_delay = mean(arr_delay, na.rm = TRUE)) %>%
+  left_join(airports, by = c('dest' = 'faa')) %>%
+  ggplot(aes(x = lon, y = lat, size = avg_arr_delay, color = avg_arr_delay)) +
+  borders('state') +
+  geom_point() +
+  coord_quickmap()
+```
+Average delays per airport
+
+  2. 
+```{r}
+flights %>% 
+  left_join(airports, by = c('dest' = 'faa')) %>%
+  left_join(airports, by = c('origin' = 'faa'), suffix = c('.dest', '.origin')) %>%
+  select(dest, origin, contains('lat'), contains('lon'))
+```
+  
+##13.5.1
+
+  2. 
+```{r}
+ flights_100 <- flights %>%
+  filter(!is.na(dep_delay)) %>%
+  group_by(tailnum) %>%
+  summarize(n = n()) %>%
+  filter(n > 100)
+
+flights %>%
+  semi_join(flights_100, by = 'tailnum')
+```
+
+  4. 48 hours of worst delays cross referened with weather
+```{r}
+worst_hours <- flights %>%
+   group_by(origin, year, month, day, hour) %>%
+  summarise(dep_delay = mean(dep_delay, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(dep_delay)) %>%
+  slice(1:48)
+weather_most_delayed <- semi_join(weather, worst_hours,
+  by = c(
+    "origin", "year",
+    "month", "day", "hour"
+  )
+)
+select(weather_most_delayed, temp, wind_speed, precip) %>%
+  print(n = 48)
+
+```
+
+```{r}
+ggplot(weather_most_delayed, aes(x = precip, y = wind_speed, color = temp)) +
+  geom_point()
+```
+
+##28.2.1
+  
+  1. 
+```{r}
+ ggplot(mpg, aes(cyl, cty)) +     geom_point(aes(color = year))     +  geom_smooth(se=FALSE) + labs(title = "City miles decreasing as cylinder number increases",
+    subtitle = "Year seemed to have to impact on city miles or cylinder number",
+    caption = "Data from fueleconomy.gov",
+    x = "Cylinder Number",
+    y = " City Miles per Gallon"
+  )
+                                                  
+```
+
+##28.4.4
+
+  1. It does not override the default scale because the colors in geom_hex() are set by the fill aesthetic, not the color aesthetic.
+  
+  4. 
+```{r}
+ggplot(diamonds, aes(carat, price)) +
+  geom_point(aes(colour = cut), alpha = 1 / 20) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 1, override.aes = list(alpha = 1)))
+```
+
